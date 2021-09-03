@@ -1,0 +1,13 @@
+Input:./20200428test.mp4
+Input full path:/home/kido/jawmotion_app/uploads/20200428test.mp4
+Camera parameters:520.833,520.833,240,320
+Output HOG:20200428test.hog
+Output video:20200428test.avi
+Output aligned directory:20200428test_aligned
+Output csv:20200428test.csv
+Gaze: 1
+AUs: 1
+Landmarks 2D: 1
+Landmarks 3D: 1
+Pose: 1
+Shape parameters: 1

@@ -1,0 +1,13 @@
+Input:./202043011729.mp4
+Input full path:/home/kido/jawmotion_app/uploads/202043011729.mp4
+Camera parameters:520.833,520.833,240,320
+Output HOG:202043011729.hog
+Output video:202043011729.avi
+Output aligned directory:202043011729_aligned
+Output csv:202043011729.csv
+Gaze: 1
+AUs: 1
+Landmarks 2D: 1
+Landmarks 3D: 1
+Pose: 1
+Shape parameters: 1
