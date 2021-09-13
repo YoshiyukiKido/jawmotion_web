@@ -10,13 +10,13 @@ git clone https://github.com/YoshiyukiKido/jawmotion_web.git
 ```
 Then, you shoud install requirement libraries and applications.
 
-# macOS
+### macOS
 ```
 pip install flask
 brew install ffmpeg
 ```
 
-# ubuntu
+### ubuntu
 ```
 pip install flask
 sudo apt install ffmpeg
