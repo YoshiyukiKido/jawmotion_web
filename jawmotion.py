@@ -4,11 +4,15 @@ import numpy as np
 import os
 import pathlib
 
-UPLOAD_FOLDER = 'uploads'
+WEB_HOME = '/Users/kido/Desktop/project/slab2019/jawmotion_web/'
+UPLOAD_DIR = 'uploads'
+FFMPEG_BIN = '/opt/homebrew/bin/ffmpeg'
+OPENFACE_BIN = '/home/kido/openface-himeno/build/bin/FaceLandmarkVidMulti'
 ALLOWED_EXTENSIONS = set(['jpg', 'avi', 'mp4', 'webm'])
 
 app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['UPLOAD_DIR'] = UPLOAD_DIR
+app.config['WEB_HOME'] = WEB_HOME
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -31,15 +35,15 @@ def uploads_file():
 
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            file.save(os.path.join(UPLOAD_DIR, filename))
             file_mp4 = pathlib.Path(filename).stem + '.mp4'
             file_avi = pathlib.Path(filename).stem + '.avi'
             file_jaw = pathlib.Path(filename).stem + '_jaw.mp4'
-            out = os.chdir('/home/kido/jawmotion_app/uploads/')
-            out = os.popen('/usr/bin/ffmpeg -i ' + filename + ' -r 30 ' + file_mp4).read()
-            out = os.popen('/home/kido/openface-himeno/build/bin/FaceLandmarkVidMulti -f /home/kido/jawmotion_app/uploads/' + file_mp4 + ' 200 20').read()
-            out = os.popen('ffmpeg -i processed/' + file_avi + ' -r 30 ' + file_jaw).read() 
-            out = os.chdir('/home/kido/jawmotion_app')
+            out = os.chdir(app.config['UPLOAD_DIR'])
+            out = os.popen(FFMPEG_BIN +' -i ' + filename + ' -r 30 ' + file_mp4).read()
+            out = os.popen(OPENFACE_BIN + ' -f ' + WEB_HOME + UPLOAD_DIR + '/' + file_mp4 + ' 200 20').read()
+            out = os.popen(FFMPEG_BIN + ' -i processed/' + file_avi + ' -r 30 ' + file_jaw).read() 
+            out = os.chdir(app.config['WEB_HOME'])
             
             return redirect(url_for('uploaded_file', filename=file_jaw))
     return '''
@@ -61,7 +65,7 @@ def uploads_file():
 
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
-    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+    return send_from_directory(app.config['UPLOAD_DIR'], filename)
 
 if __name__ == '__main__':
     app.debug=True
