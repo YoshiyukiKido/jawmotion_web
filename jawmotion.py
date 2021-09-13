@@ -20,7 +20,7 @@ def allowed_file(filename):
 @app.route("/")
 def index():
     title = "Jaw Motion"
-    return render_template('camera3.html')
+    return render_template('camera.html')
 
 @app.route("/uploadfile", methods=['GET', 'POST'])
 def uploads_file():

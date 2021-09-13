@@ -1,4 +1,4 @@
-# JawMotion Capture application Web Frontend
+# JawMotion Capture Application Web Frontend
 We have been developed a Jawmotion Capture Application based on OpenFace. This is a web frontend of JawMotion Capture application.
 It requires flask that is python based web framework.
 Main functionalities of this application is a uploading caputre movie and a openface based analysis for jaw motion.
