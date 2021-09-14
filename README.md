@@ -16,7 +16,7 @@ pip install flask
 brew install ffmpeg
 ```
 
-### ubuntu 
+### Ubuntu 20.04
 ```
 pip install flask
 sudo apt install ffmpeg
