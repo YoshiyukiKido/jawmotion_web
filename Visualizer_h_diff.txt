@@ -1,0 +1,17 @@
+--- ../OpenFaceOrg/OpenFace/lib/local/Utilities/include/Visualizer.h	2021-09-14 10:58:39.358123268 +0900
++++ ../OpenFace/lib/local/Utilities/include/Visualizer.h	2021-09-14 13:58:57.549687458 +0900
+@@ -94,11 +94,13 @@
+ 
+ 		// Can be adjusted to show less confident frames
+ 		double visualisation_boundary = 0.4;
++		// kido 
++		cv::Mat captured_image; // out canvas
+ 
+ 	private:
+ 
+ 		// Temporary variables for visualization
+-		cv::Mat captured_image; // out canvas
++		//cv::Mat captured_image; // out canvas
+ 		cv::Mat tracked_image;
+ 		cv::Mat hog_image;
+ 		cv::Mat aligned_face_image;

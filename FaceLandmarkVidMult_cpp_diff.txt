@@ -1,0 +1,85 @@
+--- ../OpenFaceOrg/OpenFace/exe/FaceLandmarkVidMulti/FaceLandmarkVidMulti.cpp	2021-09-14 10:58:32.850069028 +0900
++++ ../OpenFace/exe/FaceLandmarkVidMulti/FaceLandmarkVidMulti.cpp	2021-09-14 14:21:28.522257923 +0900
+@@ -145,6 +145,19 @@
+ 	}
+ 
+ 	LandmarkDetector::FaceModelParameters det_params(arguments);
++	
++	// vvvvv add by kido vvvvv
++	int accumulator_value = 30;
++	int edge_threshold = 20;
++	if (arguments.size() > 4) {
++		edge_threshold = atoi(arguments[3].c_str());
++		accumulator_value = atoi(arguments[4].c_str());
++	} else if (arguments.size() > 3) {
++		accumulator_value = atoi(arguments[3].c_str());
++	}
++	std::cout << "[edge_threshold] " << edge_threshold << ", [accumulator_value] " << accumulator_value << std::endl;
++	// ^^^^^ add by kido ^^^^^
++
+ 	// This is so that the model would not try re-initialising itself
+ 	det_params.reinit_video_every = -1;
+ 
+@@ -219,6 +232,9 @@
+ 
+ 	int sequence_number = 0;
+ 	
++	// add by kido
++	std::vector<float> buf_x;
++	std::vector<float> buf_y;
+ 	
+ 	while (true) // this is not a for loop as we might also be reading from a webcam
+ 	{
+@@ -385,14 +401,50 @@
+ 						face_analyser.GetLatestAlignedFace(sim_warped_img);
+ 						face_analyser.GetLatestHOG(hog_descriptor, num_hog_rows, num_hog_cols);
+ 					}
++					
++					//vvvvv jaw motion by himeno, kido vvvvv
++					float x0 = face_models[model].detected_landmarks.at<float>(57);
++					float y0 = face_models[model].detected_landmarks.at<float>(125);
++					float x1 = face_models[model].detected_landmarks.at<float>(6);
++					float y1 = face_models[model].detected_landmarks.at<float>(74);
++					float x2 = face_models[model].detected_landmarks.at<float>(8);
++					float y2 = face_models[model].detected_landmarks.at<float>(76);
++					float x3 = face_models[model].detected_landmarks.at<float>(10);
++					float y3 = face_models[model].detected_landmarks.at<float>(78);
++					cv::Mat tempimg(grayscale_image, cv::Rect((int)x1, (int)y0, (int)(x3 - x1), (int)(y2 - y0)));
++					GaussianBlur( tempimg, tempimg, cv::Size(9, 9), 2);
++					std::vector<cv::Vec3f> circles;
++					int center_x = (int) (x1 + x3) / 2;
++					int center_y = (int) (y0 + y2) / 2;
++					HoughCircles(tempimg, circles, cv::HOUGH_GRADIENT, 1, 100, edge_threshold, accumulator_value );
++					if (circles.size() == 0) {
++						std::cout << "[test] no circle!" << std::endl;
++					} else {
++						for (size_t v_i = 0; v_i < circles.size(); v_i++) {
++							center_x = (int)(x1 + circles[v_i][0]);
++							center_y = (int)(y0 + circles[v_i][1]);
++							std::cout << "[frame " << frame_count << "][test " << v_i << "] x=" << center_x << ", y=" << center_y << std::endl;
++							cv::Point center(cvRound(x1 + circles[v_i][0]), cvRound(y0 + circles[v_i][1]));
++							int radius = cvRound(circles[v_i][2]);
++							// draw the circle center
++							circle( visualizer.captured_image, center, 3, cv::Scalar(0,255,0), -1, 8, 0 );
++							//circle( tempimg, center, 3, Scalar(0,255,0), -1, 8, 0 );
++							// draw the circle outline
++							circle( visualizer.captured_image, center, radius, cv::Scalar(0,0,255), 3, 8, 0 );
++							//circle( tempimg, center, radius, Scalar(0,0,255), 3, 8, 0 );
++						}
++						face_models[model].detected_landmarks.at<float>(0) = center_x;
++						face_models[model].detected_landmarks.at<float>(68) = center_y;
++					}
+ 
+ 					// Visualize the features
+ 					visualizer.SetObservationFaceAlign(sim_warped_img);
+ 					visualizer.SetObservationHOG(hog_descriptor, num_hog_rows, num_hog_cols);
+ 					visualizer.SetObservationLandmarks(face_models[model].detected_landmarks, face_models[model].detection_certainty);
+-					visualizer.SetObservationPose(LandmarkDetector::GetPose(face_models[model], sequence_reader.fx, sequence_reader.fy, sequence_reader.cx, sequence_reader.cy), face_models[model].detection_certainty);
+-					visualizer.SetObservationGaze(gaze_direction0, gaze_direction1, LandmarkDetector::CalculateAllEyeLandmarks(face_models[model]), LandmarkDetector::Calculate3DEyeLandmarks(face_models[model], sequence_reader.fx, sequence_reader.fy, sequence_reader.cx, sequence_reader.cy), face_models[model].detection_certainty);
++					//visualizer.SetObservationPose(LandmarkDetector::GetPose(face_models[model], sequence_reader.fx, sequence_reader.fy, sequence_reader.cx, sequence_reader.cy), face_models[model].detection_certainty);
++					//visualizer.SetObservationGaze(gaze_direction0, gaze_direction1, LandmarkDetector::CalculateAllEyeLandmarks(face_models[model]), LandmarkDetector::Calculate3DEyeLandmarks(face_models[model], sequence_reader.fx, sequence_reader.fy, sequence_reader.cx, sequence_reader.cy), face_models[model].detection_certainty);
+ 					visualizer.SetObservationActionUnits(face_analyser.GetCurrentAUsReg(), face_analyser.GetCurrentAUsClass());
++					// ^^^^^^ jaw motion by himeno, kido ^^^^^
+ 
+ 					// Output features
+ 					open_face_rec.SetObservationHOG(face_models[model].detection_success, hog_descriptor, num_hog_rows, num_hog_cols, 31); // The number of channels in HOG is fixed at the moment, as using FHOG

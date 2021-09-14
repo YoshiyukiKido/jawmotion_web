@@ -4,10 +4,10 @@ import numpy as np
 import os
 import pathlib
 
-WEB_HOME = '/Users/kido/Desktop/project/slab2019/jawmotion_web/'
+WEB_HOME = '/home/kido/jawmotion_app/'
 UPLOAD_DIR = 'uploads'
-FFMPEG_BIN = '/opt/homebrew/bin/ffmpeg'
-OPENFACE_BIN = '/home/kido/openface-himeno/build/bin/FaceLandmarkVidMulti'
+FFMPEG_BIN = '/usr/bin/ffmpeg'
+OPENFACE_BIN = '/home/kido/OpenFace/build/bin/FaceLandmarkVidMulti'
 ALLOWED_EXTENSIONS = set(['jpg', 'avi', 'mp4', 'webm'])
 
 app = Flask(__name__)
