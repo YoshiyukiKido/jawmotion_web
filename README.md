@@ -10,16 +10,41 @@ git clone https://github.com/YoshiyukiKido/jawmotion_web.git
 ```
 Then, you shoud install requirement libraries and applications.
 
-### macOS
+### ~~macOS~~
 ```
-pip install flask
-brew install ffmpeg
+~~pip install flask~~
+~~brew install ffmpeg~~
 ```
 
-### ubuntu
+### ubuntu 
 ```
 pip install flask
 sudo apt install ffmpeg
+git clone https://github.com/TadasBaltrusaitis/OpenFace.git
+cd jawmotion_web
+patch -u ../OpenFace/lib/local/Utilities/include/Visualizer.h < Visualizer_h_diff.txt
+patch -u ../OpenFace/exe/FaceLandmarkVidMulti/FaceLandmarkVidMulti.cpp < .FaceLandmarkVidMult_cpp_diff.txt
+cd ../OpenFace
+./install.sh    # The install script stops in the middle, but it's okay.
+...
+mkdir -p opencv-4.1.0/build
+cd opencv-4.1.0/build
+cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr/local -D WITH_TBB=ON -D WITH_CUDA=OFF -D BUILD_SHARED_LIBS=OFF ..
+make -j4
+cd ../..
+wget http://dlib.net/files/dlib-19.13.tar.bz2
+tar xf dblib-19.13.tar.bz2
+mkdir -p dlib-19.13/build
+cd dlib-19.13/build
+cmake ..
+cmake --build . --config Release
+sudo make install
+sudo ldconfig
+cd ../..
+mkdir build
+cd build
+cmake -D CMAKE_CXX_COMPILER=g++-8 -D CMAKE_C_COMPILER=gcc-8 -D CMAKE_BUILD_TYPE=RELEASE ..
+make
 ```
 
 ## Setup and Start Flask
@@ -30,7 +55,6 @@ UPLOAD_DIR = 'uploads'  # upload moview dir
 FFMPEG_BIN = '/opt/homebrew/bin/ffmpeg'  # ffmpeg command file
 OPENFACE_BIN = '/home/kido/openface-himeno/build/bin/FaceLandmarkVidMulti'  # NOT USE (modified openface command
 ```
-
 
 ```
 cd INSTALL DIR
