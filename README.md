@@ -47,7 +47,7 @@ cmake -D CMAKE_CXX_COMPILER=g++-8 -D CMAKE_C_COMPILER=gcc-8 -D CMAKE_BUILD_TYPE=
 make
 ```
 
-After that, you shoud take the model data from https://github.com/TadasBaltrusaitis/OpenFace/wiki/Model-download.
+After that, you shoud take the model data from [https://github.com/TadasBaltrusaitis/OpenFace/wiki/Model-download](https://github.com/TadasBaltrusaitis/OpenFace/wiki/Model-download).
 ```
 cen_patches_0.25_of.dat
 cen_patches_0.35_of.dat
@@ -62,7 +62,7 @@ Before starting Flask, please modifiy environmental variables in jawmotion_app.p
 WEB_HOME = '/home/kido/jawmotion_web/' # home dir of this web application
 UPLOAD_DIR = 'uploads'  # upload moview dir
 FFMPEG_BIN = '/usr/bin/ffmpeg'  # ffmpeg command file
-OPENFACE_BIN = '/home/kido/OpenFace/build/bin/FaceLandmarkVidMulti'  # NOT USE (modified openface command
+OPENFACE_BIN = '/home/kido/OpenFace/build/bin/FaceLandmarkVidMulti'
 ```
 
 ```
