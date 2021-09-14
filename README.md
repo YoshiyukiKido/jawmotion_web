@@ -23,7 +23,7 @@ sudo apt install ffmpeg
 git clone https://github.com/TadasBaltrusaitis/OpenFace.git
 cd jawmotion_web
 patch -u ../OpenFace/lib/local/Utilities/include/Visualizer.h < Visualizer_h_diff.txt
-patch -u ../OpenFace/exe/FaceLandmarkVidMulti/FaceLandmarkVidMulti.cpp < .FaceLandmarkVidMult_cpp_diff.txt
+patch -u ../OpenFace/exe/FaceLandmarkVidMulti/FaceLandmarkVidMulti.cpp < FaceLandmarkVidMult_cpp_diff.txt
 cd ../OpenFace
 ./install.sh    # The install script stops in the middle, but it's okay.
 ...
