@@ -8,7 +8,7 @@ First, please make clone repository.
 ```
 git clone https://github.com/YoshiyukiKido/jawmotion_web.git
 ```
-Then, you shoud install requirement libraries and applications.
+Then, you shoud install requirement libraries and applications, such as [flask](https://flask.palletsprojects.com/en/2.0.x/), [ffmpeg](https://www.ffmpeg.org/) and [OpenFace](https://github.com/TadasBaltrusaitis/OpenFace/wiki/Model-download).
 
 ### ~~macOS~~
 ```
