@@ -57,7 +57,7 @@ cen_patches_1.00_of.dat
 ```
 And put these files to OpenFace model directory (OpenFace/build/bin/model/patch_experts).
 
-## Setup and Start Flask
+## Configuration
 Before starting Flask, please modifiy environmental variables in jawmotion_app.py.
 ```
 WEB_HOME = '/home/kido/jawmotion_web/' # home dir of this web application
@@ -65,7 +65,17 @@ UPLOAD_DIR = 'uploads'  # upload moview dir
 FFMPEG_BIN = '/usr/bin/ffmpeg'  # ffmpeg command file
 OPENFACE_BIN = '/home/kido/OpenFace/build/bin/FaceLandmarkVidMulti'
 ```
+And, make a server certification and keyfile for https. Because, this application use a web camera functionality via a client browser. It's need to do via https.
+```
+sudo apt install openssl
+mkdir cert
+cd cert
+openssl genrsa 2048 > server.key
+openssl req -new -key server.key > server.csr
+openssl x509 -days 3650 -req -signkey server.key < server.csr > server.crt
+```
 
+## Start Flask
 ```
 cd INSTALL DIR
 python jawmotion_app.py
