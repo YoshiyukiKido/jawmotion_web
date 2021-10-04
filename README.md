@@ -13,13 +13,13 @@ And, apply our patch files to OpenFace source for jaw motion capture functionali
 
 ### ~~macOS~~
 ```
-pip install flask flask-login
+pip install flask flask-login flask-sqlalchemy
 brew install ffmpeg
 ```
 
 ### Ubuntu 20.04
 ```
-pip install flask
+pip install flask flask-login flask-sqlalchemy
 sudo apt install ffmpeg
 git clone https://github.com/TadasBaltrusaitis/OpenFace.git
 cd jawmotion_web
