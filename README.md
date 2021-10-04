@@ -13,7 +13,7 @@ And, apply our patch files to OpenFace source for jaw motion capture functionali
 
 ### ~~macOS~~
 ```
-pip install flask
+pip install flask flask-login
 brew install ffmpeg
 ```
 

@@ -1,28 +1,36 @@
-from flask import Flask, render_template, request, redirect, url_for, send_from_directory
+from flask import Flask, Blueprint, render_template, request, redirect, url_for, send_from_directory
+from flask.helpers import flash
 from werkzeug.utils import secure_filename
 import numpy as np
 import os
 import pathlib
+from flask_login import login_required, current_user
 
-WEB_HOME = '/home/kido/jawmotion_app/'
-UPLOAD_DIR = 'uploads'
-FFMPEG_BIN = '/usr/bin/ffmpeg'
-OPENFACE_BIN = '/home/kido/OpenFace/build/bin/FaceLandmarkVidMulti'
+#WEB_HOME = '/home/kido/jawmotion_app/'
+#UPLOAD_DIR = 'uploads'
+#FFMPEG_BIN = '/usr/bin/ffmpeg'
+#OPENFACE_BIN = '/home/kido/OpenFace/build/bin/FaceLandmarkVidMulti'
 ALLOWED_EXTENSIONS = set(['jpg', 'avi', 'mp4', 'webm'])
 
 app = Flask(__name__)
-app.config['UPLOAD_DIR'] = UPLOAD_DIR
-app.config['WEB_HOME'] = WEB_HOME
+#app.config['UPLOAD_DIR'] = UPLOAD_DIR
+#app.config['WEB_HOME'] = WEB_HOME
+#login_manager = flask_login.LoginManager()
+#login_manager.init_app(app)
+
+main = Blueprint('main', __name__)
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-@app.route("/")
+@main.route("/")
+@login_required
 def index():
     title = "Jaw Motion"
     return render_template('camera.html')
 
-@app.route("/uploadfile", methods=['GET', 'POST'])
+@main.route("/uploadfile", methods=['GET', 'POST'])
+@login_required
 def uploads_file():
     if request.method == 'POST':
         if 'file' not in request.files:
@@ -40,9 +48,9 @@ def uploads_file():
             file_avi = pathlib.Path(filename).stem + '.avi'
             file_jaw = pathlib.Path(filename).stem + '_jaw.mp4'
             out = os.chdir(app.config['UPLOAD_DIR'])
-            out = os.popen(FFMPEG_BIN +' -i ' + filename + ' -r 30 ' + file_mp4).read()
-            out = os.popen(OPENFACE_BIN + ' -f ' + WEB_HOME + UPLOAD_DIR + '/' + file_mp4 + ' 200 20').read()
-            out = os.popen(FFMPEG_BIN + ' -i processed/' + file_avi + ' -r 30 ' + file_jaw).read() 
+            out = os.popen(app.config['FFMPEG_BIN'] +' -i ' + filename + ' -r 30 ' + file_mp4).read()
+            out = os.popen(app.config['OPENFACE_BIN'] + ' -f ' + app.config['WEB_HOME'] + app.config['UPLOAD_DIR'] + '/' + file_mp4 + ' 200 20').read()
+            out = os.popen(app.config['FFMPEG_BIN'] + ' -i processed/' + file_avi + ' -r 30 ' + file_jaw).read() 
             out = os.chdir(app.config['WEB_HOME'])
             
             return redirect(url_for('uploaded_file', filename=file_jaw))
@@ -63,11 +71,17 @@ def uploads_file():
     </html>
 '''
 
-@app.route('/uploads/<filename>')
+@main.route('/uploads/<filename>')
+@login_required
 def uploaded_file(filename):
     return send_from_directory(app.config['UPLOAD_DIR'], filename)
 
-if __name__ == '__main__':
-    app.debug=True
-    app.threaded=True
-    app.run(host='0.0.0.0', ssl_context=('cert/server.crt', 'cert/server.key'))
+@main.route('/profile')
+@login_required
+def profile():
+    return render_template('profile.html', name=current_user.name)
+    
+#if __name__ == '__main__':
+#    app.debug=True
+#    app.threaded=True
+#    app.run(host='0.0.0.0', ssl_context=('cert/server.crt', 'cert/server.key'))
