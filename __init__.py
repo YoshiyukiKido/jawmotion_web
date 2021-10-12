@@ -46,4 +46,7 @@ def create_app():
     app.config['FFMPEG_BIN'] = FFMPEG_BIN
     app.config['OPENFACE_BIN'] = OPENFACE_BIN
 
+    app.logger.debug(app.config)
+    app.logger.debug(type(app))
+
     return app

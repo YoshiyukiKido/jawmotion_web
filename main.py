@@ -20,6 +20,10 @@ app = Flask(__name__)
 
 main = Blueprint('main', __name__)
 
+app.logger.debug(type(app))
+app.logger.debug(type(main))
+app.logger.debug(app.config)
+
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
@@ -43,7 +47,7 @@ def uploads_file():
 
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            file.save(os.path.join(UPLOAD_DIR, filename))
+            file.save(os.path.join(app.config['UPLOAD_DIR'], filename))
             file_mp4 = pathlib.Path(filename).stem + '.mp4'
             file_avi = pathlib.Path(filename).stem + '.avi'
             file_jaw = pathlib.Path(filename).stem + '_jaw.mp4'
